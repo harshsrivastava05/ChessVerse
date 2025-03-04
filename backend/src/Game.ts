@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
 import { WebSocket } from "ws";
-import { GAME_OVER, INIT_GAME, MOVE } from "./Messages";
+import { GAME_ALERT, GAME_OVER, INIT_GAME, MOVE } from "./Messages";
 
 export class Game {
   public player1: WebSocket;
@@ -39,17 +39,26 @@ export class Game {
       to: string;
     }
   ) {
-    // validation
-    if (this.movecount % 2 === 0 && player !== this.player1) {
+    const isWhiteTurn = this.movecount % 2 === 0;
+    const currentPlayer = isWhiteTurn ? this.player1 : this.player2;
+
+    if (player !== currentPlayer) {
+      console.log("Not your turn!");
+      player.send(
+        JSON.stringify({
+          type: GAME_ALERT,
+          payload: "Not your turn!",
+        })
+      );
       return;
     }
+    
 
-    if (this.movecount % 2 === 1 && player !== this.player2) {
-      return;
-    }
-
-    try { 
+    try {
       this.board.move(move);
+      this.movecount++; // Move count updates here
+
+      // console.log("Move count after move:", this.movecount);
     } catch (e) {
       console.log(e);
       return;
@@ -67,21 +76,12 @@ export class Game {
       return;
     }
 
-    if (this.movecount % 2 === 0) {
-      this.player2.send(
-        JSON.stringify({
-          type: MOVE,
-          payload: move,
-        })
-      );
-    } else {
-      this.player1.send(
-        JSON.stringify({
-          type: MOVE,
-          payload: move,
-        })
-      );
-    }
-    this.movecount++;
+    const nextPlayer = isWhiteTurn ? this.player2 : this.player1;
+    nextPlayer.send(
+      JSON.stringify({
+        type: MOVE,
+        payload: move,
+      })
+    );
   }
 }

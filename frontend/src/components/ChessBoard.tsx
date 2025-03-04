@@ -40,8 +40,10 @@ export const ChessBoard = ({
                         JSON.stringify({
                           type: MOVE,
                           payload: {
-                            from,
-                            to: squareRepresentation,
+                            move: {
+                              from,
+                              to: squareRepresentation,
+                            },
                           },
                         })
                       );
@@ -58,11 +60,19 @@ export const ChessBoard = ({
                   className={`w-16 h-16 ${
                     (i + j) % 2 === 0 ? "bg-green-500" : "bg-white"
                   } flex items-center justify-center`}
-                  
                 >
                   <div className="h-full w-full flex items-center justify-center">
                     <div className="h-full flex flex-col justify-center">
-                      {square ? square.type : ""}
+                      {square ? (
+                        <img
+                          className="w-10"
+                          src={`/${
+                            square?.color === "b"
+                              ? square?.type
+                              : `${square?.type?.toUpperCase()} copy`
+                          }.png`}
+                        />
+                      ) : null}
                     </div>
                   </div>
                 </div>

@@ -2,7 +2,7 @@ import { WebSocket } from "ws";
 import { INIT_GAME, MOVE } from "./Messages";
 import { Game } from "./Game";
 
-export class GameManager {
+export class GameManager { 
   private games: Game[];
   private pendingUsers: WebSocket | null;
   private users: WebSocket[];
@@ -41,11 +41,13 @@ export class GameManager {
       }
 
       if (message.type === MOVE) {
+        // console.log("Move", message.payload.move);
+        // console.log("1")
         const game = this.games.find(
           (game) => game.player1 === socket || game.player2 === socket
         );
         if (game) {
-          game.makeMove(socket, message.move);
+          game.makeMove(socket, message.payload.move);
         }
       }
     });
