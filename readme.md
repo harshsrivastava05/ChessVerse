@@ -43,7 +43,7 @@ cd chessverse
 ```bash
 cd backend
 npm install
-npm start  # Start WebSocket server
+npm run dev  # Start WebSocket server
 ```
 
 ### **3. Frontend Setup**
